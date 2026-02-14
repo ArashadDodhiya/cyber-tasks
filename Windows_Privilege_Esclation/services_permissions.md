@@ -271,3 +271,13 @@ When you see a service:
 
 If yes to any combination → possible escalation.
 
+---
+
+If you want next, I can explain:
+
+* 🔥 SDDL decoding in depth
+* 🧠 Advanced service abuse (failure actions abuse)
+* 🛡 Detection engineering for SOC analysts
+* 🎯 OSCP-style service exploitation workflow
+
+What level are you aiming for?
