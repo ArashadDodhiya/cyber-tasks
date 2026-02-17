@@ -1,5 +1,7 @@
 Weak file permissions = a low-privileged user can modify files that are executed by a high-privileged user (like root) → which leads to privilege escalation.
 
+Let’s break this down in a clean, practical, pentester + sysadmin friendly way 🔥
+
 
 ---
 
