@@ -402,3 +402,23 @@ If you'd like, I can next:
 * 🔐 Explain AD CS attacks
 
 What level are you currently at — beginner, intermediate, or advanced?
+
+
+
+Kerberos basics
+
+Group nesting
+
+GPO processing order (LSDOU)
+
+OU design strategy
+
+Delegation of control
+
+🔐 How DNS and Kerberos work together
+
+🏗 What is an SRV record in detail
+
+📜 LSDOU order deeply
+
+🧠 How GPO is stored inside AD (SYSVOL + GPT)
