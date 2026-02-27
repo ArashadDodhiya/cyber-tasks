@@ -1,355 +1,106 @@
-# 🔁 1. What is Port Redirection?
+# 🔁 Port Redirection & Tunneling — Complete Guide
 
-## 🔹 Simple Explanation
-
-Port redirection means:
-
-> Taking traffic coming to one port and forwarding it to another port (same machine or another machine).
-
-Think of it like:
-
-* Someone knocks on **Door A**
-* You silently redirect them to **Door B**
-
-The visitor doesn’t know they were redirected.
+> **From beginner fundamentals to advanced pivoting techniques.**
+> This series covers every tool, technique, and concept you need to master network pivoting for ethical hacking and penetration testing.
 
 ---
 
-## 🔹 Why is it used in Ethical Hacking?
-
-During internal penetration tests:
-
-* You compromise Machine A.
-* Machine A can access Machine B (internal network).
-* But you (the attacker machine) cannot access Machine B directly.
-
-So you use Machine A to forward traffic to Machine B.
-
-That is **port redirection**.
-
----
-
-## 🔹 Practical Example
-
-### Scenario
-
-You compromised:
-
-```
-Victim1 (192.168.1.10)
-```
-
-Inside that network is:
-
-```
-Internal Server (10.10.10.5) running MySQL on port 3306
-```
-
-You cannot access `10.10.10.5` directly from your attacker machine.
-
----
-
-### Solution: Use Port Forwarding
-
-On Victim1 (compromised machine):
-
-```bash
-ssh -L 3306:10.10.10.5:3306 attacker@your_machine
-```
-
-Or using netcat/socat:
-
-```bash
-socat TCP-LISTEN:4444,fork TCP:10.10.10.5:3306
-```
-
-Now when you connect to:
-
-```
-Victim1:4444
-```
-
-It redirects traffic to:
-
-```
-10.10.10.5:3306
-```
-
-You can now access the internal MySQL server.
-
----
-
-# 🌉 2. What is Tunneling?
-
-## 🔹 Simple Explanation
-
-Tunneling is:
-
-> Creating a secure communication path through another system to reach hidden/internal systems.
-
-Think of it like:
-
-You build a secret tunnel under a wall to access a restricted area.
-
----
-
-## 🔹 Why is it important?
-
-In real corporate environments:
-
-* Internal networks are not exposed to the internet
-* Firewalls block direct access
-* You need to pivot through a compromised host
-
-Tunneling allows:
-
-✔ Bypassing firewalls
-✔ Accessing internal networks
-✔ Pivoting
-✔ Running internal scans
-
----
-
-## 🔹 Example of SSH Tunneling
-
-### Local Port Forwarding
-
-```bash
-ssh -L 8080:10.10.10.5:80 user@victim1
-```
-
-This means:
-
-```
-Your Machine:8080 → Victim1 → 10.10.10.5:80
-```
-
-Now visit:
-
-```
-http://localhost:8080
-```
-
-And you access internal web server 10.10.10.5.
-
----
-
-### Dynamic Port Forwarding (SOCKS Proxy)
-
-```bash
-ssh -D 9050 user@victim1
-```
-
-Now configure proxychains:
-
-```
-socks5 127.0.0.1 9050
-```
-
-Now you can scan internal machines using:
-
-```bash
-proxychains nmap 10.10.10.0/24
-```
-
-This is tunneling.
-
----
-
-# 🔄 3. Port Redirection vs Tunneling
-
-| Port Redirection       | Tunneling                    |
-| ---------------------- | ---------------------------- |
-| Forwards one port      | Can forward many ports       |
-| Simple                 | More flexible                |
-| Basic pivot            | Advanced pivot               |
-| Usually single service | Full network access possible |
-
----
-
-# 🚀 4. What is Ligolo-ng?
-
-Now we move to modern red teaming tool: **Ligolo-ng**
-
----
-
-## 🔹 What is Ligolo-ng?
-
-Ligolo-ng is:
-
-> A modern, lightweight tunneling tool used for pivoting inside internal networks.
-
-It allows you to:
-
-✔ Create reverse tunnels
-✔ Pivot easily
-✔ Route entire subnets
-✔ Scan internal networks like you’re inside
-
-And it does NOT require admin privileges in many cases.
-
----
-
-## 🔹 Why Ligolo-ng is Popular?
-
-Compared to:
-
-* SSH tunneling
-* Chisel
-* Meterpreter
-
-Ligolo-ng is:
-
-✔ Faster
-✔ More stable
-✔ Works with raw TCP
-✔ Works well with Nmap
-✔ Easy to use
-
----
-
-# 🧠 How Ligolo-ng Works (Simple)
-
-It uses:
-
-* **Agent** → runs on compromised machine
-* **Proxy/Server** → runs on attacker machine
-
-The agent connects back to you.
-
-Then you can create a virtual interface and route traffic through it.
-
----
-
-# 🔥 Ligolo-ng Practical Example
-
----
-
-## 🖥 Scenario
-
-You compromised:
-
-```
-Victim1 (192.168.1.10)
-```
-
-Victim1 can access:
-
-```
-Internal Network: 10.10.10.0/24
-```
-
-You cannot access it directly.
-
----
-
-## Step 1: Start Ligolo Proxy on Attacker
-
-```bash
-./proxy -selfcert
+## 📊 Learning Path
+
+```mermaid
+graph TD
+    A["🟢 START HERE"] --> B["01 - Port Redirection Fundamentals"]
+    B --> C["02 - SSH Tunneling Deep Dive"]
+    C --> D["03 - Chisel Tunneling"]
+    C --> E["06 - Proxychains & SOCKS"]
+    D --> F["04 - Ligolo-ng Mastery"]
+    E --> F
+    C --> G["05 - Windows Tunneling Tools"]
+    C --> H["07 - sshuttle & VPN Tunneling"]
+    F --> I["08 - Double Pivoting (Advanced)"]
+    I --> J["09 - DNS & ICMP Tunneling"]
+    J --> K["10 - Pivoting Cheatsheet"]
+    K --> L["🏁 READY FOR REAL ENGAGEMENTS"]
+
+    style A fill:#00c853,color:#000
+    style L fill:#ff6d00,color:#000
+    style I fill:#d50000,color:#fff
+    style J fill:#d50000,color:#fff
 ```
 
 ---
 
-## Step 2: Run Agent on Victim
+## 📚 Document Index
 
-On compromised machine:
+| # | Document | Level | Description |
+|---|----------|-------|-------------|
+| 01 | [Port Redirection Fundamentals](./01_port_redirection_fundamentals.md) | 🟢 Beginner | Core concepts, socat, netcat, iptables, netsh basics |
+| 02 | [SSH Tunneling Deep Dive](./02_SSH_tunneling_deep_dive.md) | 🟢 Beginner | Local/Remote/Dynamic forwarding, jump hosts, chaining |
+| 03 | [Chisel Tunneling](./03_chisel_tunneling.md) | 🟡 Intermediate | Forward & reverse proxy, SOCKS, firewall bypass |
+| 04 | [Ligolo-ng Mastery](./04_ligolo_ng_mastery.md) | 🟡 Intermediate | Full subnet routing, TUN interfaces, multi-pivot |
+| 05 | [Windows Tunneling Tools](./05_windows_tunneling_tools.md) | 🟡 Intermediate | netsh, plink, Windows OpenSSH, ncat |
+| 06 | [Proxychains & SOCKS](./06_proxychains_socks.md) | 🟡 Intermediate | SOCKS proxies, proxychains config, tool integration |
+| 07 | [sshuttle & VPN Tunneling](./07_sshuttle_and_vpn_tunneling.md) | 🟡 Intermediate | Poor man's VPN, subnet routing, comparisons |
+| 08 | [Double Pivoting (Advanced)](./08_double_pivoting_advanced.md) | 🔴 Advanced | Multi-hop pivoting with SSH, Chisel, Ligolo-ng |
+| 09 | [DNS & ICMP Tunneling](./09_dns_icmp_tunneling.md) | 🔴 Advanced | dnscat2, iodine, ptunnel, firewall evasion |
+| 10 | [Pivoting Cheatsheet](./10_pivoting_cheatsheet.md) | 📋 Reference | Quick-reference commands, decision flowchart |
 
-```bash
-./agent -connect ATTACKER_IP:11601 -ignore-cert
+---
+
+## 🎯 What You'll Learn
+
+By the end of this series, you will be able to:
+
+- ✅ Understand the difference between port redirection and tunneling
+- ✅ Use SSH for local, remote, and dynamic port forwarding
+- ✅ Pivot through compromised hosts using Chisel, Ligolo-ng, and sshuttle
+- ✅ Tunnel traffic on Windows hosts using netsh and plink
+- ✅ Route entire subnets through tunnels
+- ✅ Chain multiple pivots (double/triple pivoting)
+- ✅ Bypass restrictive firewalls using DNS and ICMP tunnels
+- ✅ Choose the right tool for any engagement scenario
+
+---
+
+## 🧩 Core Concept: The Pivoting Problem
+
+```
+┌──────────────┐       FIREWALL       ┌──────────────┐       ┌──────────────┐
+│   ATTACKER   │ ──────── ✕ ────────→ │   INTERNAL   │       │   INTERNAL   │
+│  (Kali/VPS)  │   Can't reach        │  Server (B)  │       │  Server (C)  │
+│              │   directly!          │  10.10.10.5   │       │  10.10.10.20 │
+└──────────────┘                      └──────────────┘       └──────────────┘
+       │                                     ▲                       ▲
+       │                                     │                       │
+       ▼                                     │                       │
+┌──────────────┐                             │                       │
+│  COMPROMISED │ ────── CAN REACH ───────────┘───────────────────────┘
+│   HOST (A)   │   (dual-homed or
+│ 192.168.1.10 │    internal access)
+└──────────────┘
 ```
 
-Now Victim connects to you.
+**The solution**: Use Host A as a **pivot point** to reach B and C through tunneling.
 
 ---
 
-## Step 3: Create Tunnel Interface
+## ⚠️ Ethical Reminder
 
-On attacker machine:
+All techniques in this series must **only** be used in:
 
-```bash
-interface_create
-```
+- 🧪 Lab environments (your home lab)
+- 🎯 Authorized penetration tests (with written permission)
+- 🏆 CTF competitions
+- 🐛 Bug bounty programs (within scope)
 
-Then:
-
-```bash
-interface_up
-```
-
-Add route:
-
-```bash
-sudo ip route add 10.10.10.0/24 dev ligolo
-```
+**Never use these techniques on systems without explicit written authorization.**
 
 ---
 
-## Step 4: Scan Internal Network
+## 🚀 Recommended Study Order
 
-Now you can directly run:
-
-```bash
-nmap 10.10.10.5
-```
-
-And it will scan through the tunnel.
-
-You are now virtually inside the network.
-
----
-
-# 🔍 Why Ligolo-ng is Better Than Basic SSH?
-
-| SSH Tunnel          | Ligolo-ng             |
-| ------------------- | --------------------- |
-| Per-port forwarding | Full subnet routing   |
-| Slower              | Faster                |
-| Needs SSH access    | Just agent execution  |
-| Limited             | Great for red teaming |
-
----
-
-# 🧪 Real Ethical Hacking Use Case
-
-During internal penetration test:
-
-1. Gain initial access (phishing / exploit)
-2. Drop Ligolo agent
-3. Create tunnel
-4. Scan internal AD servers
-5. Perform enumeration
-6. Escalate privileges
-
-This is called **pivoting**.
-
----
-
-# ⚠️ Important Ethical Note
-
-These techniques:
-
-* Should only be used in:
-
-  * Lab environments
-  * Bug bounty scope
-  * Authorized penetration tests
-
-Never use on systems without written permission.
-
----
-
-# 🧠 Summary
-
-### Port Redirection
-
-Forward one port to another.
-
-### Tunneling
-
-Create secure path to access hidden networks.
-
-### Ligolo-ng
-
-Modern pivoting tool that allows routing full internal networks through compromised hosts.
-
+1. **Read docs 01 → 02** first — these are the foundation
+2. **Pick your tool**: Read 03 (Chisel) OR 04 (Ligolo-ng) based on interest
+3. **Read 05 & 06** — Windows pivoting and proxychains are essential
+4. **Move to advanced**: 08 (Double Pivoting) and 09 (DNS/ICMP) when comfortable
+5. **Keep 10 (Cheatsheet)** open as reference during practice
