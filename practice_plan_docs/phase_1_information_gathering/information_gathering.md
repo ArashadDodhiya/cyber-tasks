@@ -20,6 +20,20 @@
 
 ---
 
+## 📂 Additional Resources — Real-World Scenarios & Guides
+
+> These documents expand Phase 1 with hands-on, scenario-based learning.
+
+| Document                                                                         | Description                                                                                      |
+| -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| [Scenario 1 — External Pentest Recon](./scenario_1_external_pentest_recon.md)    | 🏢 Simulates a client engagement where you only have a domain name. Full passive→active workflow. |
+| [Scenario 2 — Bug Bounty Web App Recon](./scenario_2_webapp_bug_bounty_recon.md) | 🐛 Simulates a HackerOne/Bugcrowd program. Subdomain hunting, JS analysis, API discovery.         |
+| [Scenario 3 — Internal Network Recon](./scenario_3_internal_network_recon.md)    | 🔓 Post-breach scenario. Map a corporate network, find DCs, shares, and databases.                |
+| [Recon Methodology Guide](./recon_methodology_guide.md)                          | 🧠 The 5-stage framework professionals use. Process over tools.                                   |
+| [Recon Cheatsheet](./recon_cheatsheet.md)                                        | ⚡ Quick-reference for all recon commands. Print and pin to your wall.                            |
+
+---
+
 ## 1. Setup & Targets
 
 | Target           | IP (Example)              | What to Practice                        |
