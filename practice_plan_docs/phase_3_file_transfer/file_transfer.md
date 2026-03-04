@@ -51,6 +51,25 @@ chmod +x test_script.sh
 
 ---
 
+## 📖 Detailed Guides (Step-by-Step)
+
+> Each method has its own detailed doc with simple explanations, diagrams, and practice checklists:
+
+| #   | Method                                     | Guide                                                                    | Difficulty |
+| --- | ------------------------------------------ | ------------------------------------------------------------------------ | ---------- |
+| 1   | HTTP Transfer (wget, curl, Python server)  | [01_http_transfer.md](./01_http_transfer.md)                             | ⭐ Easy     |
+| 2   | Netcat Transfer (raw TCP push/pull)        | [02_netcat_transfer.md](./02_netcat_transfer.md)                         | ⭐ Easy     |
+| 3   | SMB Transfer (Impacket, Windows shares)    | [03_smb_transfer.md](./03_smb_transfer.md)                               | ⭐⭐ Medium  |
+| 4   | SCP / SSH / SFTP (encrypted transfers)     | [04_scp_ssh_sftp_transfer.md](./04_scp_ssh_sftp_transfer.md)             | ⭐ Easy     |
+| 5   | FTP / TFTP (classic file transfer)         | [05_ftp_tftp_transfer.md](./05_ftp_tftp_transfer.md)                     | ⭐ Easy     |
+| 6   | Encoding & Stealth (Base64, Hex, Certutil) | [06_encoding_stealth_transfer.md](./06_encoding_stealth_transfer.md)     | ⭐⭐ Medium  |
+| 7   | PowerShell & Windows methods               | [07_powershell_windows_transfer.md](./07_powershell_windows_transfer.md) | ⭐⭐ Medium  |
+| 8   | Living Off the Land (Python, Perl, Bash)   | [08_lol_transfer.md](./08_lol_transfer.md)                               | ⭐⭐ Medium  |
+
+> 💡 **Start with Guide 1 (HTTP)** — it's the most common method and the easiest to learn!
+
+---
+
 ## 2. HTTP File Transfer
 
 ### 2.1 — Python HTTP Server (Most Common)
