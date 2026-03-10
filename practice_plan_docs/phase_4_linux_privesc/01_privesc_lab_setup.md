@@ -165,21 +165,39 @@ ls -la /etc/passwd.bak   # Should be writable by everyone
 ## Step 6: Set Up PATH Hijacking
 
 ```bash
-# Create a vulnerable SUID binary that calls a command without full path
-sudo bash -c 'cat > /usr/local/bin/suid_service << "EOF"
-#!/bin/bash
-echo "Starting service..."
-service apache2 status
+# 1. Create a C program that calls 'service' without an absolute path
+sudo bash -c 'cat > /tmp/suid_service.c << "EOF"
+#include <stdlib.h>
+#include <unistd.h>
+#include <stdio.h>
+
+int main() {
+    // Set effective user ID to root
+    setuid(0);
+    setgid(0);
+    printf("Starting service...\n");
+    
+    // The vulnerability: calling "service" without the full path
+    system("service apache2 status");
+    
+    return 0;
+}
 EOF'
 
+# 2. Compile the C program into a binary
+sudo gcc /tmp/suid_service.c -o /usr/local/bin/suid_service
+
+# 3. Add the SUID bit to the compiled binary
 sudo chmod u+s /usr/local/bin/suid_service
-sudo chmod +x /usr/local/bin/suid_service
+
+# 4. Clean up the source code
+sudo rm /tmp/suid_service.c
 ```
 
 **Verify:**
 ```bash
 ls -la /usr/local/bin/suid_service
-# Should show SUID bit set
+# Should show SUID bit set (-rwsr-xr-x) and owner as root
 ```
 
 > 🎯 **Practice as trainee:**
