@@ -39,6 +39,7 @@ curl -I http://192.168.56.20:8180
 # Step 1: Quick scan — find open ports
 nmap 192.168.56.20
 # 📝 How many open ports did you find? List them all.
+# ✅ Found 18 open ports: 21(ftp), 22(ssh), 23(telnet), 80(http), 111(rpcbind), 512(exec), 513(login), 514(shell), 1099(rmiregistry), 1524(ingreslock), 2121(ccproxy-ftp), 3306(mysql), 5432(postgresql), 5900(vnc), 6000(X11), 6667(irc), 8009(ajp13), 8180(unknown).
 
 # Step 2: Service version detection
 nmap -sV 192.168.56.20
